@@ -1,0 +1,115 @@
+/* Small, intentional interactions. No motion library or persistent storage. */
+:root {
+  --ease-discovery: cubic-bezier(.16,1,.3,1);
+  --transition-interactive: 180ms var(--ease-discovery);
+}
+.search-actions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 12px 16px;
+  width: min(100%,560px);
+  align-self: flex-end;
+  align-items: center;
+}
+.search-actions .search { width: 100%; min-width: 0; align-self: center; }
+.search-actions .search input { min-width: 0; }
+.search-actions .search { transition: border-color 180ms ease, box-shadow 180ms ease; }
+.search:focus-within { border-color: var(--color-primary); box-shadow: 0 1px 0 var(--color-primary); }
+.random-help {
+  grid-column: 1 / -1;
+  max-width: none;
+  text-align: right;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+.random-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 18px;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-bg);
+  white-space: nowrap;
+  font-weight: 700;
+}
+.shuffle-icon { flex: 0 0 20px; width: 20px; height: 20px; transition: transform 280ms var(--ease-discovery); }
+:is(button,.button) {
+  transition: transform var(--transition-interactive), box-shadow var(--transition-interactive),
+    background var(--transition-interactive), color var(--transition-interactive),
+    border-color var(--transition-interactive), opacity 120ms ease;
+}
+:is(.button,.notes,.random-again) > span[aria-hidden] {
+  display: inline-block;
+  transition: transform 180ms var(--ease-discovery);
+}
+.guide-arrow { transition: transform 180ms var(--ease-discovery); }
+.collection .photo img { transition: transform 650ms var(--ease-discovery); }
+.collection-title > span { display: inline-block; transition: transform 240ms var(--ease-discovery); }
+button:not(:disabled):active, .button:active {
+  transform: translateY(1px) scale(.975);
+  transition-duration: 100ms;
+  opacity: 1;
+}
+button:disabled { transform: none; box-shadow: none; }
+.random-button:focus-visible { background: var(--color-primary); color: var(--color-inverse); }
+.discovery-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 12px 16px;
+  margin-bottom: var(--space-6);
+  background: var(--color-surface);
+  border-left: 2px solid var(--color-primary);
+}
+#dialog-content .discovery-note p { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); flex: 1 1 180px; }
+.random-again { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; font-size: var(--text-sm); white-space: nowrap; }
+.product-card { animation: find-arrive 200ms var(--ease-discovery) backwards; }
+.product-card:nth-child(3n+2) { animation-delay: 30ms; }
+.product-card:nth-child(3n) { animation-delay: 60ms; }
+@keyframes find-arrive { from { opacity: .45; } to { opacity: 1; } }
+dialog {
+  opacity: 0;
+  transform: translateY(12px) scale(.985);
+  transition: opacity 200ms ease, transform 240ms var(--ease-discovery),
+    display 240ms allow-discrete, overlay 240ms allow-discrete;
+}
+dialog[open] { opacity: 1; transform: none; }
+dialog::backdrop {
+  background: transparent;
+  transition: background 200ms ease, display 240ms allow-discrete, overlay 240ms allow-discrete;
+}
+dialog[open]::backdrop { background: oklch(.2 .02 90 / .55); }
+@starting-style {
+  dialog[open] { opacity: 0; transform: translateY(12px) scale(.985); }
+  dialog[open]::backdrop { background: transparent; }
+}
+@media (hover:hover) and (pointer:fine) {
+  .collection:hover .photo img { transform: scale(1.035); }
+  .collection:hover .collection-title > span { transform: translate(3px,-3px); }
+  .guide-list button:hover { background: var(--color-surface); }
+  :is(.button,.random-button,.page-button,.filter):not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px oklch(.29 .027 105 / .12);
+  }
+  .random-button:hover { color: var(--color-inverse); background: var(--color-primary); }
+  .random-button:hover .shuffle-icon { transform: rotate(-12deg); }
+  :is(.button,.notes):hover > span[aria-hidden], .guide-list button:hover .guide-arrow { transform: translate(3px,-2px); }
+  .random-again:hover > span { transform: rotate(60deg); }
+  :is(.button,.random-button,.page-button,.filter):not(:disabled):active { transform: translateY(1px) scale(.975); box-shadow: none; }
+}
+@media (max-width:760px) {
+  .search-actions { width: 100%; gap: 10px 12px; }
+  .random-button { padding-inline: 12px; gap: 8px; }
+  .random-help { text-align: left; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *, *::before, *::after, dialog::backdrop { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  :is(button,.button,.shuffle-icon,.guide-arrow), :is(.button,.notes,.random-again) > span[aria-hidden], .collection .photo img, .collection-title > span { transform: none !important; }
+  dialog, dialog[open] { transform: none; }
+}
